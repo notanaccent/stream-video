@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Video Viewer</title>
+    <style>
+        .centered {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="centered">
+        <h1>Stream Viewer</h1>
+        <video id="video" autoplay controls style="display: none;"></video>
+        <button id="play-button" onclick="play()">Play Video Stream</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/3.2.1/dash.all.min.js"></script>
+    <script>
+        function play() {
+            const video = document.getElementById('video');
+            const button = document.getElementById('play-button');
+            const manifestUrl = 'http://localhost:8000/output/dash/manifest.mpd';
+            const player = dashjs.MediaPlayer().create();
+            player.initialize(video, manifestUrl, true);
+            video.style.display = "";
+            button.style.display = "none";
+        }
+    </script>
+</body>
+
+</html>

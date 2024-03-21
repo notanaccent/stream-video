@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Video Capture</title>
+    <style>
+        .centered {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="centered">
+        <h1>Stream Capture</h1>
+        <video id="video" autoplay></video>
+    </div>
+    <script>
+        const video = document.getElementById('video');
+        const ws = new WebSocket('ws://localhost:8080/');
+
+        navigator.mediaDevices.getUserMedia({
+            video:
+            {
+                // width: { ideal: 320 },
+                // height: { ideal: 240 },
+                // frameRate: { ideal: 10 }
+            }
+        })
+            .then(stream => {
+                video.srcObject = stream;
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'video/webm;codecs=h264',
+                    // bitsPerSecond: 1e6,
+                });
+
+                mediaRecorder.addEventListener('dataavailable', (e) => ws.send(e.data));
+
+                mediaRecorder.addEventListener('stop', () => ws.close());
+
+                mediaRecorder.start(1000);
+            })
+            .catch(error => {
+                console.error('Error accessing media devices:', error);
+            });
+    </script>
+</body>
+
+</html>
